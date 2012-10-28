@@ -1,5 +1,7 @@
 import java.awt.event.KeyEvent;
 
+import javax.swing.JOptionPane;
+
 
 import net.minecraft.client.Minecraft;
 
@@ -41,16 +43,18 @@ public class ary extends asd
     this.d = par4;
     this.e = par5;
     currentInstance = this;
-    IMEInput.getInstance().put("chat", new IMEKeyTypedPreFilter() {
+    IMEInput imeInput = IMEInput.getInstance();
+    imeInput.put("chat", new IMEKeyTypedPreFilter() {
 		@Override
 		public void keyTyped(KeyEvent e) {
 			  int charInt = (int)e.getKeyChar();
 			  if((charInt == 13 || charInt == 10) // CR or LF
 					 && currentInstance != null){
-				currentInstance.b(IMEInput.getInstance().getText());
-				IMEInput.getInstance().setText("");
-				IMEInput.getInstance().update();
-				IMEInput.getInstance().detach();
+				IMEInput i = IMEInput.getInstance();
+				currentInstance.b(i.getText());
+				i.setText("");
+				i.update();
+				i.detach();
 			  } else if(charInt == 8) { // BS
 				  currentInstance.b(-1);
 			  } else if(charInt == 127) { // DEL
@@ -60,8 +64,8 @@ public class ary extends asd
 			  }
 		}
 	});
-    IMEInput.getInstance().attach();
-    IMEInput.getInstance().field.requestFocus();	
+    imeInput.attach();
+    imeInput.field.requestFocus();	
   }
 
   public void a()
@@ -267,9 +271,11 @@ public class ary extends asd
 
   public boolean a(char par1, int par2)
   {
+	IMEInput imeInput = IMEInput.getInstance();
+    imeInput.setPreFilterMode("chat");
 	if(!((int)par1 == 0 && (par2 == 203 || par2 == 205))){
-	 IMEInput.getInstance().attach();
-	 IMEInput.getInstance().field.requestFocus();	
+	 imeInput.attach();
+	 imeInput.field.requestFocus();	
 	}
 	
     if ((this._m) && (this.l))
@@ -592,6 +598,7 @@ public class ary extends asd
 
   public void i(int par1)
   {
+	
     int var2 = this.f.length();
 
     if (par1 > var2)

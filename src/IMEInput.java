@@ -41,21 +41,23 @@ import org.lwjgl.opengl.Display;
 public class IMEInput
   implements KeyListener, InputMethodListener, CaretListener, MouseWheelListener
 {
-  private static IMEInput singleton = null;
+  private static final AtomicReference<IMEInput> singleton = new AtomicReference<IMEInput>(null);
+  private static final Object lockInstance = new Object();
   
   public static IMEInput getInstance(){
-	  if(singleton == null){
-		  singleton = new IMEInput(Minecraft.x());
+	  synchronized (lockInstance) {
+		  if(singleton.get() == null){
+			  singleton.set(new IMEInput(Minecraft.x()));
+		  }
+		  return singleton.get();
 	  }
-	  return singleton;
   }
-	
+  
   protected final IMEKeyMap keyMap = new IMEKeyMap();
-  protected Minecraft minecraft;
-  protected Frame frame;
-  protected JTextField field;
-  protected JPanel panel;
-  protected Container cont;
+  protected volatile Minecraft minecraft;
+  protected volatile Frame frame;
+  protected volatile JTextField field;
+  protected volatile Container cont;
   protected Method keyTypedMethod;
   protected int limitLength = 20;
   protected volatile boolean isTakingScreenshot;
@@ -443,6 +445,10 @@ public class IMEInput
   public IMEKeyTypedPreFilter put(String modeName, IMEKeyTypedPreFilter filter) {
 	filterMode.set(modeName); //set filter mode 
 	return keyTypedFilterMap.put(modeName, filter);
+  }
+  
+  public void setPreFilterMode(String modeName){
+	  filterMode.set(modeName);
   }
 
   public void keyTyped(KeyEvent e)

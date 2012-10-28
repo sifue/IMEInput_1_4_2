@@ -20,17 +20,19 @@ public class auo extends asw
   public auo(amj paramamj) {
     this.c = paramamj;
     currentInstance = this;
-    IMEInput.getInstance().put("sign", new IMEKeyTypedPreFilter() {
+    IMEInput imeInput = IMEInput.getInstance();
+    imeInput.put("sign", new IMEKeyTypedPreFilter() {
 		@Override
 		public void keyTyped(KeyEvent e) {
 			  int charInt = (int)e.getKeyChar();
 			  if((charInt == 13 || charInt == 10) // CR or LF
 					 && currentInstance != null){
-				String text = IMEInput.getInstance().getText();
+				IMEInput currentInput = IMEInput.getInstance();
+				String text = currentInput.getText();
 				if(text != null && !text.isEmpty()){
 				  auo.this.c.a[auo.this._m] = auo.this.c.a[auo.this._m] + text;
-				  IMEInput.getInstance().setText("");
-				  IMEInput.getInstance().update();
+				  currentInput.setText("");
+				  currentInput.update();
 				}else{
 					currentInstance.a((char)10 , 28);
 				}
@@ -41,8 +43,8 @@ public class auo extends asw
 			  }
 		}
 	});
-    IMEInput.getInstance().attach();
-    IMEInput.getInstance().field.requestFocus();	
+    imeInput.attach();
+    imeInput.field.requestFocus();	
   }
 
   public void A_()
@@ -77,10 +79,12 @@ public class auo extends asw
 
   protected void a(char paramChar, int paramInt)
   {
+	IMEInput imeInput = IMEInput.getInstance();
+	imeInput.setPreFilterMode("sign");
 	if(paramChar == (char)10 && (paramInt == 28 || paramInt == 208)){
-	  IMEInput.getInstance().setText("");
-	  IMEInput.getInstance().update();
-	  IMEInput.getInstance().field.requestFocus();
+	  imeInput.setText("");
+	  imeInput.update();
+	  imeInput.field.requestFocus();
 	}
     if (paramInt == 200) this._m = (this._m - 1 & 0x3);
     if ((paramInt == 208) || (paramInt == 28)) this._m = (this._m + 1 & 0x3);
