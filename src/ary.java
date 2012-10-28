@@ -1,3 +1,6 @@
+import java.awt.event.KeyEvent;
+
+
 import net.minecraft.client.Minecraft;
 
 import org.lwjgl.opengl.GL11;
@@ -29,24 +32,6 @@ public class ary extends asd
   private boolean s = true;
 
   private static ary currentInstance = null;
-  private static IMEInput imeInput = new IMEInput(Minecraft.x()){
-	  public void keyTyped(java.awt.event.KeyEvent e) {
-		  int charInt = (int)e.getKeyChar();
-		  if((charInt == 13 || charInt == 10) // CR or LF
-				 && currentInstance != null){
-			currentInstance.b(imeInput.getText());
-			imeInput.setText("");
-		  	imeInput.update();
-		  	imeInput.detach();
-		  } else if(charInt == 8) { // BS
-			  currentInstance.b(-1);
-		  } else if(charInt == 127) { // DEL
-			  currentInstance.b(-1);
-		  } else if(!Character.isLetter(Character.forDigit(charInt, 10))) {
-			  currentInstance.b(charInt);
-		  }
-	  };
-  };
 	  
   public ary(asb par1FontRenderer, int par2, int par3, int par4, int par5)
   {
@@ -56,8 +41,27 @@ public class ary extends asd
     this.d = par4;
     this.e = par5;
     currentInstance = this;
-    imeInput.attach();
-    imeInput.field.requestFocus();	
+    IMEInput.getInstance().put("chat", new IMEKeyTypedPreFilter() {
+		@Override
+		public void keyTyped(KeyEvent e) {
+			  int charInt = (int)e.getKeyChar();
+			  if((charInt == 13 || charInt == 10) // CR or LF
+					 && currentInstance != null){
+				currentInstance.b(IMEInput.getInstance().getText());
+				IMEInput.getInstance().setText("");
+				IMEInput.getInstance().update();
+				IMEInput.getInstance().detach();
+			  } else if(charInt == 8) { // BS
+				  currentInstance.b(-1);
+			  } else if(charInt == 127) { // DEL
+				  currentInstance.b(-1);
+			  } else if(!Character.isLetter(Character.forDigit(charInt, 10))) {
+				  currentInstance.b(charInt);
+			  }
+		}
+	});
+    IMEInput.getInstance().attach();
+    IMEInput.getInstance().field.requestFocus();	
   }
 
   public void a()
@@ -264,8 +268,8 @@ public class ary extends asd
   public boolean a(char par1, int par2)
   {
 	if(!((int)par1 == 0 && (par2 == 203 || par2 == 205))){
-	 imeInput.attach();
-     imeInput.field.requestFocus();	
+	 IMEInput.getInstance().attach();
+	 IMEInput.getInstance().field.requestFocus();	
 	}
 	
     if ((this._m) && (this.l))

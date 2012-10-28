@@ -22,6 +22,9 @@ import java.awt.event.MouseWheelListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.AttributedCharacterIterator;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -38,6 +41,15 @@ import org.lwjgl.opengl.Display;
 public class IMEInput
   implements KeyListener, InputMethodListener, CaretListener, MouseWheelListener
 {
+  private static IMEInput singleton = null;
+  
+  public static IMEInput getInstance(){
+	  if(singleton == null){
+		  singleton = new IMEInput(Minecraft.x());
+	  }
+	  return singleton;
+  }
+	
   protected final IMEKeyMap keyMap = new IMEKeyMap();
   protected Minecraft minecraft;
   protected Frame frame;
@@ -424,9 +436,19 @@ public class IMEInput
     {
     }
   }
+  
+  private final Map<String, IMEKeyTypedPreFilter> keyTypedFilterMap = new ConcurrentHashMap<String, IMEKeyTypedPreFilter>();
+  private final AtomicReference<String> filterMode = new AtomicReference<String>("");
+
+  public IMEKeyTypedPreFilter put(String modeName, IMEKeyTypedPreFilter filter) {
+	filterMode.set(modeName); //set filter mode 
+	return keyTypedFilterMap.put(modeName, filter);
+  }
 
   public void keyTyped(KeyEvent e)
   {
+	keyTypedFilterMap.get(filterMode.get()).keyTyped(e);
+	  
     if ((Character.isLetter(e.getKeyChar())) && 
       (this.field.getText().length() >= this.limitLength))
       e.consume();
