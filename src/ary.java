@@ -1,10 +1,5 @@
 import java.awt.event.KeyEvent;
 
-import javax.swing.JOptionPane;
-
-
-import net.minecraft.client.Minecraft;
-
 import org.lwjgl.opengl.GL11;
 
 public class ary extends asd

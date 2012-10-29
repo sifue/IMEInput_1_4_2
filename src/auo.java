@@ -1,9 +1,5 @@
 import java.awt.event.KeyEvent;
-import java.util.List;
 
-import javax.swing.JOptionPane;
-
-import net.minecraft.client.Minecraft;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 

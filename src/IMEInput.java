@@ -11,6 +11,7 @@ import java.awt.GraphicsEnvironment;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.InputMethodEvent;
@@ -26,9 +27,13 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
+import javax.swing.InputMap;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
@@ -294,8 +299,17 @@ public class IMEInput
 		    IMEInput.this.field.setPreferredSize(new Dimension(minecraft.c, 30));
 
 		    IMEInput.this.frame.add(IMEInput.this.field, "South");
-		  }
-		});
+		    
+		    InputMap im = IMEInput.this.field.getInputMap();
+		    im.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "escape");
+		    ActionMap am = IMEInput.this.field.getActionMap();
+			am.put("escape", new AbstractAction() {
+				private static final long serialVersionUID = 7181971421045030222L;
+				public void actionPerformed(ActionEvent ae) {
+					detach();
+				}});
+				}
+			});
 	} catch (InterruptedException e) {
 		e.printStackTrace();
 	} catch (InvocationTargetException e) {
@@ -320,7 +334,6 @@ public class IMEInput
       if (!this.isAttached) {
         this.isFocusLost = true;
         this.isAttached = true;
-
         switchField(true);
         KeyboardFocusManager.getCurrentKeyboardFocusManager().clearGlobalFocusOwner();
         this.frame.requestFocus();
