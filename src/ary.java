@@ -59,8 +59,11 @@ public class ary extends asd
 			  }
 		}
 	});
-    imeInput.attach();
-    imeInput.field.requestFocus();	
+    
+    if(!(par2 == 198 && par3 == 58 && par4 == 89 && par5 == 9)){ // ignore creative inventory
+    	imeInput.attach();
+    	imeInput.field.requestFocus();	
+    }
   }
 
   public void a()
